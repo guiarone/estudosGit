@@ -1,0 +1,65 @@
+object FormEscolheCriaPasta: TFormEscolheCriaPasta
+  Left = 0
+  Top = 0
+  Caption = 'Escolha a pasta'
+  ClientHeight = 462
+  ClientWidth = 484
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 421
+    Width = 484
+    Height = 41
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 0
+    ExplicitLeft = -233
+    ExplicitTop = 381
+    ExplicitWidth = 808
+    object sbtSelecionar: TSpeedButton
+      Left = 0
+      Top = 0
+      Width = 150
+      Height = 41
+      Cursor = crHandPoint
+      Align = alLeft
+      Caption = 'Selecionar'
+      Flat = True
+      ExplicitLeft = 10
+      ExplicitTop = 1
+      ExplicitHeight = 40
+    end
+    object sbtCriar: TSpeedButton
+      Left = 150
+      Top = 0
+      Width = 150
+      Height = 41
+      Cursor = crHandPoint
+      Align = alLeft
+      Caption = 'Nova'
+      Flat = True
+      ExplicitLeft = 190
+      ExplicitTop = 6
+      ExplicitHeight = 40
+    end
+    object sbtSair: TSpeedButton
+      Left = 300
+      Top = 0
+      Width = 150
+      Height = 41
+      Cursor = crHandPoint
+      Align = alLeft
+      Caption = 'Sair'
+      Flat = True
+      ExplicitLeft = 358
+    end
+  end
+end

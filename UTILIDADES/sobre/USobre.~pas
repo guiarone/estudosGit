@@ -1,0 +1,202 @@
+unit USobre;
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls;
+
+type
+  TFormSobre = class(TForm)
+    Panel1: TPanel;
+    ProgramIcon: TImage;
+    ProductName: TLabel;
+    Version: TLabel;
+    Copyright: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    LBUsada: TLabel;
+    LBLivre: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    BitBtn1: TBitBtn;
+    Memo1: TMemo;
+    procedure FormCreate(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+    V: string;
+    procedure PegaDados;
+  public
+    { Public declarations }
+  end;
+
+var
+  FormSobre: TFormSobre;
+
+implementation
+
+{$R *.DFM}
+
+procedure TFormSobre.FormCreate(Sender: TObject);
+const
+  InfoNum = 10;
+  InfoStr: array[1..InfoNum] of string = ('CompanyName', 'FileDescription', 'FileVersion', 'InternalName', 'LegalCopyright', 'LegalTradeMarks', 'OriginalFileName', 'ProductName', 'ProductVersion', 'Comments');
+var
+  S: string;
+  n, Len, i: DWORD;
+  Buf: PChar;
+  Value: PChar;
+  InfoValores: array[1..InfoNum] of string;
+begin
+  S := Application.ExeName;
+  n := GetFileVersionInfoSize(PChar(S), n);
+  if n > 0 then
+  begin
+
+    Buf := AllocMem(n);
+ //   Memo1.Lines.Add('VersionInfoSize = ' + IntToStr(n));
+    GetFileVersionInfo(PChar(S), 0, n, Buf);
+    for i := 1 to InfoNum do
+      if VerQueryValue(Buf, PChar('StringFileInfo\041604E4\' + InfoStr[i]), Pointer(Value), Len) then
+        InfoValores[i]:= Value;
+    FreeMem(Buf, n);
+  end;
+  ProductName.Caption:= InfoValores[8];
+  Version.Caption:= 'Versão: '+InfoValores[3];//+ ' '+InfoValores[4];//'Versão 2.2.5.0 de (13/12/2002)';
+  V:= 'Versão: '+InfoValores[3];
+  Copyright.Caption:= 'Copyright '+InfoValores[5];
+  PegaDados;
+end;
+
+procedure TFormSobre.FormActivate(Sender: TObject);
+var
+  MS: TMemoryStatus;
+begin
+  GlobalMemoryStatus(MS);
+  LBUsada.Caption := FormatFloat('#,###" KB"', MS.dwTotalPhys / 1024);
+  LBLivre.Caption := Format('%d %%', [MS.dwMemoryLoad]);
+  PegaDados;
+end;
+
+procedure TFormSobre.PegaDados;
+const
+  InfoNum = 10;
+  InfoStr: array[1..InfoNum] of string = ('CompanyName', 'FileDescription', 'FileVersion', 'InternalName', 'LegalCopyright', 'LegalTradeMarks',
+          'OriginalFileName', 'ProductName', 'ProductVersion', 'Comments');
+var
+  S: string;
+  n, Len, i: DWORD;
+  Buf: PChar;
+  Value: PChar;
+  Pesquisa: TSearchRec;
+begin
+  Memo1.Lines.Clear;
+  S := Application.ExeName;
+  n := GetFileVersionInfoSize(PChar(S), n);
+  if n > 0 then
+  begin
+    Buf := AllocMem(n);
+//    Memo1.Lines.Add('VersionInfoSize = ' + IntToStr(n));
+    GetFileVersionInfo(PChar(S), 0, n, Buf);
+    for i := 1 to InfoNum do
+      if VerQueryValue(Buf, PChar('StringFileInfo\041604E4\' + InfoStr[i]),
+         Pointer(Value), Len) then
+        if Length(Value)>1 then
+          Memo1.Lines.Add(InfoStr[i] + ' = ' + Value);
+    if VerQueryValue(Buf, PChar('StringFileInfo\041604E4\' + InfoStr[3]),
+       Pointer(Value), Len) then
+    FreeMem(Buf, n);
+  end
+  else
+    Memo1.Lines.Add('Nenhuma informação de versão encontrada');
+  FindFirst(ParamStr(0),0,Pesquisa);
+  Memo1.Lines.Add('Tamanho: '+FormatFloat('##,###,###', Pesquisa.Size)+' bytes');
+  Memo1.Lines.Add('Data Compilação: '+DateToStr(FileDateToDateTime(Pesquisa.Time)));
+  Version.Caption:= V+ ' - '+DateToStr(FileDateToDateTime(Pesquisa.Time));
+  Memo1.Lines.Add('Hora Compilação: '+TimeToStr(FileDateToDateTime(PEsquisa.Time)));
+  FindClose(Pesquisa);
+end;
+
+
+{
+ 2.1.1 Janela de configuracao de Nervo e sitio rápida...
+ 2.2.0 editor de laudos...
+ 2.2.1 tempo de janela em ms ou ms/div
+ 2.2.2 resolvido o problema do exame importado do cd estar marcaco como readonly
+ 2.2.3 DISTANCIA ENTRE PONTOS NA SENS, L2 NO BLINK,
+       problemas com maiuscula <> minuscula ao calcular velocidade na testagem motora,
+       ao comparar nervo corrigido...
+ 2.2.4 Resolvido o erro ao calcular a derivada...
+ 2.2.5 Resolvido problema com marcacao no blink qdo as curvas são sobrepostas
+       Inserido possibilidade de imprimir exames de traz para frente
+ 2.2.6 Resolvido problema com marcacao no blink qdo as curvas são sobrepostas...
+       Inserido o filtro 60Hz de software...
+       Imprimir invertido corrigido.
+ 2.2.7 -> tecla de atalho para paciente novo
+       -> caclulo da area das curvas area: positiva, negativa, total
+       -> Aumentado o tamanho da fonte na tabela
+       -> Medicao de latencias na sensitiva e motora configuravel para marcas 1 e 2
+       -> Configura fonte de impressao abilitado
+ 2.2.8 -> inserido opcao de entrar automaticamente no modo visualiz ao apertar f10
+       -> teclas de atalho na janela de escolha de sitio e nervo
+       -> abilitada a opcao de somente um estimulo de cada vez com o F6
+       -> opcao de imprimir todo o exame sem apertar a tecla insert
+       -> opcao de gravar todas as telas para imprimir do exa,e de uma vez só
+ 2.2.9(17/02/2003)
+       -> Opcao de somente um choque por vez com a tecla zero...
+ 2.3.0.1(19/05/2003)
+       -> RedeTCPImplementado
+       -> Corrigido palavra nascimento na impressao...
+ 2.4.0.0(20/05/2003)
+       -> Primeira versao compilada em windows XP
+       -> Corrigido problema na medicao de impedancia...
+ 2.4.0.1(23/05/2003)
+       -> Corrigido problema na impressao:
+       -> Velocidade no motor errada...
+ 2.4.0.2(26/05/2003)
+       -> Executar janela de testagem automaticamente ao apertar insert configuravel
+       -> SEleciona o ultimo protocolo usado, ao entrar na janela de testagem
+       -> Caso escolha o mesmo protocolo, não recarrega do ini as configuracoes
+       -> Qdo na miografia teclar F10, pré selecionar ultimo musculo feito
+       -> Troca letra: a penultima e a ultima letra entram selecionadas
+       -> Não arredondar amplitude na tabela
+       -> Distândia no Shift + Z já entra pré selecionada
+       -> Copiar/Colar curvas de uma tela para outra.
+ 2.4.0.3(05/06/2003)
+       -> Promedio havia parado de funcionar...Ok
+ 2.4.0.4(05/06/2003)
+       -> Erro ao tentar imprimir protocolo com nome maior q 19 caracteres...
+       -> Não permito mais nomes grandes
+       ->se o nome ja for grande ele corta na impressao...
+ 2.4.0.5(05/08/2003)
+       -> Inserido separação de linhas e coluna na impressão da tabela
+ 2.4.0.6(25/08/2003)
+       -> chama o invalidate para ver c para de apagar curvas ao exibir janela
+ 2.4.0.7(25/09/2003)
+       -> inserido o sexo na impressao
+       -> corrigido o registro do sexo na ficha do paciente
+       -> corrigido o problema de fixar a opcao de exibir tempo de janela em microV/div
+       -> corrigido o problema de fixar a o lado ao clicar shift _Z
+       -> Upper case na janela de nervos e sitios somente no nervo
+
+ 2.4.0.8(29/09/2003)
+       -> inserido OPCAO DE IMPRIMIR OS DADOS DA JANELA AO LADO DA CURVA
+       -> inserido OPCAO DE config grade imp
+ 2.4.0.8(29/09/2003)
+       -> inserido OPCAO DE IMPRIMIR OS DADOS DA JANELA AO LADO DA CURVA
+       -> inserido OPCAO DE config grade imp
+ 2.4.0.9(10/10/2003)
+       -> inspeciona tabela
+ 2.4.0.10(13/10/2003)
+       -> despresa os primeiros 20% para calculo da impedância
+ 2.4.0.11(28/10/2003)
+       -> tenta diminuir a qtd de erros de comunicacao no winME
+ 2.4.0.13(03/12/2004)
+       -> CORRIGIDO range check na checagem de impedância
+       -> Corrigido problema que acontecia ao usar o (shift + z)
+ 2.4.0.15(09/02/2004)
+       -> Opcao de medir latencia em L1 ou L2 separadamente para Sinsitivo e motor
+}
+
+end.
+

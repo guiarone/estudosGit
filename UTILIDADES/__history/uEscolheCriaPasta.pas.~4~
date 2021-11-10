@@ -1,0 +1,30 @@
+unit uEscolheCriaPasta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.Outline, Vcl.Samples.DirOutln;
+
+type
+  TFormEscolheCriaPasta = class(TForm)
+    Panel1: TPanel;
+    sbtSelecionar: TSpeedButton;
+    sbtCriar: TSpeedButton;
+    sbtSair: TSpeedButton;
+    DirectoryOutline1: TDirectoryOutline;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormEscolheCriaPasta: TFormEscolheCriaPasta;
+
+implementation
+
+{$R *.dfm}
+
+end.
